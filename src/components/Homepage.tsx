@@ -1,17 +1,27 @@
+import Anecdote from "./Anecdote";
+import anecdotesList from "../assets/anecdotes.json";
+
 const Homepage = () => {
-  const array: string[] = [];
-  for (let i = 0; i < 25; i++) {
-    array.push(`Anecdote ${i + 1}`);
-  }
   return (
-    <div>
+    <div className="overflow-scroll flex flex-col gap-3">
       <h1>Birthday Bingo!</h1>
 
-      <div className="grid grid-cols-5">
-        {array.map((anecdote) => {
-          return <div className="p-3 text-xs bg-slate-200">{anecdote}</div>;
+      <div className="w-full grid grid-cols-5">
+        {anecdotesList.map((anecdote) => {
+          return <Anecdote title={anecdote.name} />;
         })}
       </div>
+
+      <div className="w-full flex justify-center gap-5">
+        <button className="w-1/5 bg-cyan-700 text-white">Enregistrer</button>
+        <button
+          disabled
+          className="w-1/5 bg-blue-700 text-white disabled:bg-gray-400"
+        >
+          Soumettre
+        </button>
+      </div>
+      <div>O personnes ont soumis une réponse .... a gagné !</div>
     </div>
   );
 };
