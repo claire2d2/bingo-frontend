@@ -1,5 +1,5 @@
-import { useState } from "react";
-import useAuth from "../context/useAuth";
+import { useState, FormEvent } from "react";
+// import useAuth from "../context/useAuth";
 import bingoApi from "../service/bingoApi";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -12,8 +12,8 @@ type formType = {
   password: string;
 };
 
-const LogIn = () => {
-  const { storeToken, authenticateUser } = useAuth();
+const SignUp = () => {
+  // const { storeToken, authenticateUser } = useAuth();
   const [formState, setFormState] = useState<formType>({
     email: "",
     password: "",
@@ -27,19 +27,14 @@ const LogIn = () => {
     setFormState({ ...formState, [key]: value });
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
-      const response = await bingoApi.post("/auth/login", formState);
+      console.log(formState);
+      const response = await bingoApi.post("/auth/signup", formState);
       console.log(response);
-      const token = response.data.authToken;
-      if (response.status === 400) {
-        console.log(response.data.message);
-      }
-      storeToken(token);
-      await authenticateUser();
-      if (response.status === 200) {
-        console.log("user logged in", response.data);
+      if (response.status === 201) {
+        console.log("user created", response.data);
         navigate("/");
       }
     } catch (error) {
@@ -62,9 +57,9 @@ const LogIn = () => {
     <div>
       <Header />
       <div className="m-4">
-        <div>Tu as déjà un compte : </div>
+        <div>Bienvenue chez nous ! </div>
         <form
-          action=""
+          onSubmit={handleSubmit}
           className="flex flex-col gap-2 p-4 m-3 border border-gray-300 rounded-md drop-shadow-lg bg-white"
         >
           <label htmlFor="email">Email :</label>
@@ -85,11 +80,11 @@ const LogIn = () => {
             onChange={handleChange}
             className={inputStyle}
           />
-          <button onClick={handleSubmit}>Se connecter</button>
+          <button>Créer un compte</button>
         </form>
         <div>
-          Tu n'as pas de compte ?{" "}
-          <button className="underline"> Créer un compte</button>
+          Tu as déjà un compte ?{" "}
+          <button className="underline"> Se connecter</button>
         </div>
         <div>{errorMsg}</div>
       </div>
@@ -97,4 +92,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default SignUp;
