@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAuth from "../context/useAuth";
+import { useNavigate } from "react-router-dom";
 import bingoApi from "../service/bingoApi";
 
 type gameType = {
@@ -7,7 +7,7 @@ type gameType = {
 };
 
 const CreateGame = () => {
-  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   //   const [newGame, setNewGame] = useState(null);
   const [oneAnecdote, setOneAnecdote] = useState<string>("");
   const [anecdotes, setAnecdotes] = useState<string[]>([]);
@@ -33,20 +33,18 @@ const CreateGame = () => {
         });
       });
       await Promise.all(createdAnecdotes);
+      navigate(`/manage-game/${response.data._id}`);
     } catch (error) {
       console.log(error);
     }
   }
-  if (!isLoggedIn) {
-    return;
-    <div> Tu dois être connecté pour pouvoir créer un jeu !</div>;
-  }
+
   return (
     <div>
-      <div>Renseigne 25 anecdotes avant de créer ton bingo</div>
+      <div>Renseigne au moins une anecdote avant de créer ton bingo</div>
       <button
         onClick={createGame}
-        disabled={anecdotes.length < 2}
+        disabled={anecdotes.length < 1}
         className="bg-blue-500 disabled:bg-gray-600"
       >
         Créer

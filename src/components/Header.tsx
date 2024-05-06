@@ -1,5 +1,3 @@
-import React from "react";
-
 const Header = () => {
   return (
     <nav className="w-full bg-orange-700 text-white text-4xl flex items-center text-center py-3">

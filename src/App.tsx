@@ -2,7 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import LogIn from "./pages/LogIn";
 import SignUp from "./pages/SignUp";
-import ManageGame from "./pages/ManageGame";
+import ManageAllGames from "./pages/ManageAllGames";
+import ManageOneGame from "./pages/ManageOneGame";
 import CreateGame from "./pages/CreateGame";
 
 function App() {
@@ -13,7 +14,10 @@ function App() {
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/create-game" element={<CreateGame />} />
-        <Route path="/manage-game" element={<ManageGame />} />
+        <Route path="/manage-game">
+          <Route index element={<ManageAllGames />} />
+          <Route path=":gameId" element={<ManageOneGame />} />
+        </Route>
       </Routes>
     </div>
   );
