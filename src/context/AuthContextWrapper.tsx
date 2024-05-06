@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import bingoApi from "../service/bingoApi";
 
@@ -25,6 +25,11 @@ function AuthContextWrapper({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<userType | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // call authenticate function when loading page
+  useEffect(() => {
+    authenticateUser();
+  }, []);
 
   const storeToken = (token: string) => localStorage.setItem("token", token);
   const removeToken = () => localStorage.removeItem("token");

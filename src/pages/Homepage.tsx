@@ -1,5 +1,13 @@
+import useAuth from "../context/useAuth";
+
 const Homepage = () => {
-  return <div>Homepaaage</div>;
+  const { isLoggedIn } = useAuth();
+  return (
+    <div>
+      Homepaaage
+      <div>{isLoggedIn ? "yes" : "no"}</div>
+    </div>
+  );
 };
 
 export default Homepage;
