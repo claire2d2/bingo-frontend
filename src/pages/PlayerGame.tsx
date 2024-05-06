@@ -1,7 +1,7 @@
-import Anecdote from "./Anecdote";
+import Anecdote from "../components/Anecdote";
 import anecdotesList from "../assets/anecdotes.json";
 
-const Homepage = () => {
+const PlayerGame = () => {
   return (
     <div className="overflow-scroll flex flex-col gap-3">
       <h1>Birthday Bingo!</h1>
@@ -26,4 +26,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default PlayerGame;
