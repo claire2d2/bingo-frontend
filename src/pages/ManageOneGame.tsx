@@ -9,6 +9,7 @@ type gameType = {
   _id: string;
   name: string;
   grid: number;
+  launched: boolean;
 };
 
 type anecdoteType = {
@@ -137,10 +138,37 @@ const ManageOneGame = () => {
       console.log(error);
     }
   }
+
+  // launch the game
+
+  async function launchGame(isLaunched: boolean) {
+    try {
+      let status: boolean;
+      if (isLaunched) {
+        status = false;
+      } else {
+        status = true;
+      }
+      const response = await bingoApi.put(`/games/${gameId}`, {
+        launched: status,
+      });
+      fetchGameData();
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (!gameData) {
+    return <div>Loading!</div>;
+  }
   return (
     <div>
       <Header />
-      <div>{gameData?.name}</div>
+      <div className="flex">
+        {gameData?.name} <HiMiniPencil />
+      </div>
+
       <div>
         <p>Grille:</p>
         <p>
@@ -194,8 +222,18 @@ const ManageOneGame = () => {
           </li>
         </ul>
       </div>
-
-      <button>Delete game</button>
+      <button
+        onClick={() => launchGame(gameData.launched)}
+        disabled={
+          (gameData?.grid === 5 && gameAnecdotes.length < 5) ||
+          (gameData?.grid === 4 && gameAnecdotes.length < 15) ||
+          (gameData?.grid === 3 && gameAnecdotes.length < 8)
+        }
+        className="bg-blue-500 disabled:bg-slate-400"
+      >
+        {gameData?.launched ? "Archiver le jeu" : "Lancer le jeu"}
+      </button>
+      <button>Supprimer le jeu</button>
     </div>
   );
 };
