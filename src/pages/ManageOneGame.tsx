@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import bingoApi from "../service/bingoApi";
 
 import Header from "../components/Header";
@@ -23,7 +23,7 @@ const ManageOneGame = () => {
   const [gameAnecdotes, setGameAnecdotes] = useState<anecdoteType[]>([]);
   const [initAnecdotes, setInitAnecdotes] = useState<anecdoteType[]>([]);
   const [editGameAnecdotes, setEditGameAnecdotes] = useState<boolean[]>([]);
-
+  const [oneAnecdote, setOneAnecdote] = useState<string>("");
   // fetch game data and its related anecdotes
   useEffect(() => {
     fetchGameData();
@@ -77,10 +77,34 @@ const ManageOneGame = () => {
     console.log(editGameAnecdotes);
   }
 
+  // add a new anecdote
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.currentTarget.value;
+    setOneAnecdote(value);
+  }
+
+  async function addAnecdote(newAnecdote: string) {
+    try {
+      const response = await bingoApi.post("/anecdotes", {
+        game: gameId,
+        title: newAnecdote,
+      });
+      setGameAnecdotes([...gameAnecdotes, response.data]);
+    } catch (error) {
+      console.log(error);
+    }
+    setOneAnecdote("");
+  }
   return (
     <div>
       <Header />
       <div>{gameData?.name}</div>
+      <div>
+        <p>Grille:</p>
+        <p>
+          {gameData?.grid} x {gameData?.grid}
+        </p>
+      </div>
       <div>
         <ul>
           {gameAnecdotes?.map((anecdote, index) => {
@@ -107,6 +131,21 @@ const ManageOneGame = () => {
               </li>
             );
           })}
+          <li>
+            <label htmlFor="anecdote">Rajouter une anecdote: </label>
+            <div>
+              <input
+                type="text"
+                id="anecdote"
+                value={oneAnecdote}
+                onChange={handleChange}
+                maxLength={100}
+              />
+              <button type="button" onClick={() => addAnecdote(oneAnecdote)}>
+                +
+              </button>
+            </div>
+          </li>
         </ul>
       </div>
 
