@@ -12,6 +12,7 @@ type gameType = {
 };
 
 type anecdoteType = {
+  _id: string;
   title: string;
 };
 
@@ -66,17 +67,41 @@ const ManageOneGame = () => {
 
   // edit an anecdote
 
-  function editAnecdote(index: number) {
+  function setEditMode(index: number, id: string) {
     const copy = [...editGameAnecdotes];
     if (editGameAnecdotes[index]) {
       copy[index] = false;
+      editAnecdote(id, gameAnecdotes[index].title);
     } else {
       copy[index] = true;
     }
     setEditGameAnecdotes(copy);
-    console.log(editGameAnecdotes);
   }
 
+  function handleEditChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+    id: string
+  ) {
+    const value = e.currentTarget.value;
+    const copy = [...gameAnecdotes];
+    copy[index] = {
+      _id: id,
+      title: value,
+    };
+    setGameAnecdotes(copy);
+  }
+
+  async function editAnecdote(id: string, newAnecdote: string) {
+    try {
+      const response = await bingoApi.put(`/anecdotes/one/${id}`, {
+        title: newAnecdote,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   // add a new anecdote
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.currentTarget.value;
@@ -90,10 +115,27 @@ const ManageOneGame = () => {
         title: newAnecdote,
       });
       setGameAnecdotes([...gameAnecdotes, response.data]);
+      const copy = [...editGameAnecdotes];
+      copy.push(false);
+      setEditGameAnecdotes(copy);
     } catch (error) {
       console.log(error);
     }
     setOneAnecdote("");
+  }
+
+  // delete an anecdote
+
+  async function deleteAnecdote(index: number, id: string) {
+    try {
+      const response = await bingoApi.delete(`/anecdotes/one/${id}`);
+      console.log(response.data);
+      const copy = [...gameAnecdotes];
+      copy.splice(index, 1);
+      setGameAnecdotes(copy);
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div>
@@ -115,16 +157,20 @@ const ManageOneGame = () => {
               >
                 <div>
                   {editGameAnecdotes[index] ? (
-                    <input type="text" />
+                    <input
+                      type="text"
+                      value={anecdote.title}
+                      onChange={(e) => handleEditChange(e, index, anecdote._id)}
+                    />
                   ) : (
                     <div>{anecdote.title}</div>
                   )}
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => editAnecdote(index)}>
+                  <button onClick={() => setEditMode(index, anecdote._id)}>
                     {editGameAnecdotes[index] ? <HiCheck /> : <HiMiniPencil />}
                   </button>
-                  <button>
+                  <button onClick={() => deleteAnecdote(index, anecdote._id)}>
                     <HiMiniTrash />
                   </button>
                 </div>
