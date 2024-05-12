@@ -30,7 +30,7 @@ const ManageOneGame = () => {
   useEffect(() => {
     fetchGameData();
     fetchGameAnecdotes();
-  }, [gameId]);
+  }, []);
 
   async function fetchGameData() {
     try {

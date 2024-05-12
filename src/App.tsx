@@ -5,6 +5,7 @@ import SignUp from "./pages/SignUp";
 import ManageAllGames from "./pages/ManageAllGames";
 import ManageOneGame from "./pages/ManageOneGame";
 import CreateGame from "./pages/CreateGame";
+import PlayerGame from "./pages/PlayerGame";
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         <Route path="/manage-game">
           <Route index element={<ManageAllGames />} />
           <Route path=":gameId" element={<ManageOneGame />} />
+        </Route>
+        <Route path="/play-game">
+          <Route path=":gameId" element={<PlayerGame />} />
         </Route>
       </Routes>
     </div>

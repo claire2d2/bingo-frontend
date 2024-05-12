@@ -1,14 +1,61 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import bingoApi from "../service/bingoApi";
 import Anecdote from "../components/Anecdote";
-import anecdotesList from "../assets/anecdotes.json";
+
+type gameType = {
+  _id: string;
+  name: string;
+  grid: number;
+  launched: boolean;
+};
+
+type anecdoteType = {
+  _id: string;
+  title: string;
+};
 
 const PlayerGame = () => {
+  //TODO if game isn't launched, say it isn't launched
+  //TODO if game doesn't exist
+
+  const { gameId } = useParams<string>();
+  const [gameData, setGameData] = useState<gameType | null>(null);
+  const [gameAnecdotes, setGameAnecdotes] = useState<anecdoteType[]>([]);
+  // fetch game data and its related anecdotes
+  useEffect(() => {
+    fetchGameData();
+    fetchGameAnecdotes();
+  }, []);
+
+  async function fetchGameData() {
+    try {
+      const response = await bingoApi.get(`/games/${gameId}`);
+      setGameData(response.data);
+      console.log("game", response.data);
+      // TODO redirect if game creator isn't logged in user
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function fetchGameAnecdotes() {
+    try {
+      const response = await bingoApi.get(`/anecdotes/${gameId}`);
+      setGameAnecdotes(response.data);
+      console.log("initial anecdotes", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="overflow-scroll flex flex-col gap-3">
       <h1>Birthday Bingo!</h1>
+      <div>{gameData?.name}</div>
 
       <div className="w-full grid grid-cols-5">
-        {anecdotesList.map((anecdote) => {
-          return <Anecdote title={anecdote.name} />;
+        {gameAnecdotes?.map((anecdote) => {
+          return <Anecdote title={anecdote.title} />;
         })}
       </div>
 
