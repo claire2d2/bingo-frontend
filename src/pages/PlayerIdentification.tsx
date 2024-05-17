@@ -32,8 +32,7 @@ const PlayerIdentification: React.FC<PlayerIdentificationProps> = ({
     setFormState({ ...formState, [key]: value });
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function handleSubmit() {
     console.log(formState);
     identifyPlayer();
   }
@@ -41,7 +40,7 @@ const PlayerIdentification: React.FC<PlayerIdentificationProps> = ({
   async function identifyPlayer() {
     try {
       const response = await bingoApi.get(
-        `/players/${gameId}?username=${formState.username}&pinCode=${formState.pinCode}`
+        `/players/login/${gameId}?username=${formState.username}&pinCode=${formState.pinCode}`
       );
       setPlayerData(response.data);
       localStorage.setItem(gameId, formState.username);

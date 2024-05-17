@@ -6,7 +6,6 @@ import ManageAllGames from "./pages/ManageAllGames";
 import ManageOneGame from "./pages/ManageOneGame";
 import CreateGame from "./pages/CreateGame";
 import PlayerHomePage from "./pages/PlayerHomePage";
-import PlayerIdentification from "./pages/PlayerIdentification";
 
 function App() {
   return (
@@ -23,7 +22,6 @@ function App() {
         <Route path="/play-game">
           <Route path=":gameId" element={<PlayerHomePage />} />
         </Route>
-        <Route path="test" element={<PlayerIdentification />} />
       </Routes>
     </div>
   );

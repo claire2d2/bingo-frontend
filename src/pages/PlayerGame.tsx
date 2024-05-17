@@ -2,16 +2,17 @@ import { useState, useEffect } from "react";
 import bingoApi from "../service/bingoApi";
 import Anecdote from "../components/Anecdote";
 
-type gameType = {
+type playerDataType = {
   _id: string;
-  name: string;
-  grid: number;
-  launched: boolean;
+  username: string;
 };
 
 type anecdoteType = {
   _id: string;
-  title: string;
+  anecdote: {
+    title: string;
+  };
+  proposition: string;
 };
 
 type PlayerGameProps = {
@@ -20,30 +21,34 @@ type PlayerGameProps = {
 const PlayerGame: React.FC<PlayerGameProps> = ({ gameId }) => {
   //TODO if game isn't launched, say it isn't launched
   //TODO if game doesn't exist
-
-  const [gameData, setGameData] = useState<gameType | null>(null);
+  const [playerData, setPlayerData] = useState<playerDataType | null>(null);
   const [gameAnecdotes, setGameAnecdotes] = useState<anecdoteType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const playerUsername = localStorage.getItem(gameId);
   // fetch game data and its related anecdotes
+
   useEffect(() => {
-    fetchGameData();
-    fetchGameAnecdotes();
+    fetchPlayerData();
   }, []);
 
-  async function fetchGameData() {
+  useEffect(() => {
+    fetchGameAnecdotes();
+  }, [playerData]);
+
+  async function fetchPlayerData() {
     try {
-      setIsLoading(false);
-      const response = await bingoApi.get(`/games/${gameId}`);
-      setGameData(response.data);
-      // TODO redirect if game creator isn't logged in user
+      const response = await bingoApi.get<playerDataType>(
+        `/players/fetchPlayer?username=${playerUsername}&game=${gameId}`
+      );
+      console.log(playerData);
+      setPlayerData(response.data);
     } catch (error) {
       console.log(error);
     }
   }
-
   async function fetchGameAnecdotes() {
     try {
-      const response = await bingoApi.get(`/anecdotes/${gameId}`);
+      const response = await bingoApi.get(`/bingocells/all/${playerData?._id}`);
       setGameAnecdotes(response.data);
       console.log("initial anecdotes", response.data);
     } catch (error) {
@@ -51,24 +56,18 @@ const PlayerGame: React.FC<PlayerGameProps> = ({ gameId }) => {
     }
   }
 
-  // if data is loading
-  if (isLoading && !gameData) {
-    return <div>Game loading</div>;
-  }
-
   // if no game exists
-  if (!gameData) {
+  if (!gameAnecdotes) {
     return <div>Ce jeu n'existe pas ...</div>;
   }
 
   return (
     <div className="overflow-scroll flex flex-col gap-3">
       <h1>Birthday Bingo!</h1>
-      <div>{gameData?.name}</div>
 
       <div className="w-full grid grid-cols-5">
         {gameAnecdotes?.map((anecdote) => {
-          return <Anecdote title={anecdote.title} />;
+          return <Anecdote title={anecdote.anecdote.title} />;
         })}
       </div>
 
