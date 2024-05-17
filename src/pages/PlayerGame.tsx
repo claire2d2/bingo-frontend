@@ -22,6 +22,7 @@ const PlayerGame = () => {
   const { gameId } = useParams<string>();
   const [gameData, setGameData] = useState<gameType | null>(null);
   const [gameAnecdotes, setGameAnecdotes] = useState<anecdoteType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // fetch game data and its related anecdotes
   useEffect(() => {
     fetchGameData();
@@ -30,9 +31,9 @@ const PlayerGame = () => {
 
   async function fetchGameData() {
     try {
+      setIsLoading(false);
       const response = await bingoApi.get(`/games/${gameId}`);
       setGameData(response.data);
-      console.log("game", response.data);
       // TODO redirect if game creator isn't logged in user
     } catch (error) {
       console.log(error);
@@ -48,6 +49,17 @@ const PlayerGame = () => {
       console.log(error);
     }
   }
+
+  // if data is loading
+  if (isLoading && !gameData) {
+    return <div>Game loading</div>;
+  }
+
+  // if no game exists
+  if (!gameData) {
+    return <div>Ce jeu n'existe pas ...</div>;
+  }
+
   return (
     <div className="overflow-scroll flex flex-col gap-3">
       <h1>Birthday Bingo!</h1>
