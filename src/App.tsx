@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp";
 import ManageAllGames from "./pages/ManageAllGames";
 import ManageOneGame from "./pages/ManageOneGame";
 import CreateGame from "./pages/CreateGame";
-import PlayerGame from "./pages/PlayerGame";
+import PlayerHomePage from "./pages/PlayerHomePage";
 import PlayerIdentification from "./pages/PlayerIdentification";
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
           <Route path=":gameId" element={<ManageOneGame />} />
         </Route>
         <Route path="/play-game">
-          <Route path=":gameId" element={<PlayerGame />} />
+          <Route path=":gameId" element={<PlayerHomePage />} />
         </Route>
         <Route path="test" element={<PlayerIdentification />} />
       </Routes>

@@ -13,7 +13,13 @@ type playerType = {
   submitted: boolean;
 };
 
-const PlayerIdentification = () => {
+type PlayerIdentificationProps = {
+  gameId: string;
+};
+
+const PlayerIdentification: React.FC<PlayerIdentificationProps> = ({
+  gameId,
+}) => {
   const [formState, setFormState] = useState<playerLogInType>({
     username: "",
     pinCode: "",
@@ -35,9 +41,10 @@ const PlayerIdentification = () => {
   async function identifyPlayer() {
     try {
       const response = await bingoApi.get(
-        `/players/66394de916b24ad96dba945b?username=${formState.username}&pinCode=${formState.pinCode}`
+        `/players/${gameId}?username=${formState.username}&pinCode=${formState.pinCode}`
       );
       setPlayerData(response.data);
+      localStorage.setItem(gameId, formState.username);
     } catch (error) {
       console.log(error);
       createPlayer();
@@ -46,11 +53,9 @@ const PlayerIdentification = () => {
 
   async function createPlayer() {
     try {
-      const response = await bingoApi.post(
-        "/players/66394de916b24ad96dba945b",
-        formState
-      );
+      const response = await bingoApi.post(`/players/${gameId}`, formState);
       setPlayerData(response.data);
+      localStorage.setItem(gameId, formState.username);
     } catch (error) {
       console.log(error);
     }

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import bingoApi from "../service/bingoApi";
 import Anecdote from "../components/Anecdote";
 
@@ -15,11 +14,13 @@ type anecdoteType = {
   title: string;
 };
 
-const PlayerGame = () => {
+type PlayerGameProps = {
+  gameId: string;
+};
+const PlayerGame: React.FC<PlayerGameProps> = ({ gameId }) => {
   //TODO if game isn't launched, say it isn't launched
   //TODO if game doesn't exist
 
-  const { gameId } = useParams<string>();
   const [gameData, setGameData] = useState<gameType | null>(null);
   const [gameAnecdotes, setGameAnecdotes] = useState<anecdoteType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
